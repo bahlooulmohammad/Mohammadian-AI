@@ -1,11 +1,10 @@
 <!doctype html>
-
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101827">
-<title>Mohammadian AI | میز آماده‌سازی ریلز</title>
+<title>Mohammadian AI | مدیریت ریلز</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#0b1220;color:#f4f6ff;font-family:Tahoma,Arial,sans-serif}
@@ -38,39 +37,71 @@ textarea{min-height:100px;line-height:1.8}
 .row>*{flex:1;min-width:130px}
 .notice{border-right:3px solid #8274ff;padding:9px 12px;background:#111b2e;border-radius:8px}
 .item a{color:#b9b0ff;overflow-wrap:anywhere}
+.category{width:100%;margin:5px 0}
 @media(max-width:700px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<main class="wrap"><header class="head">
+<main class="wrap">
+
+<header class="head">
 <div>
 <div class="brand">✦ Mohammadian AI</div>
-<div class="muted">میز آماده‌سازی ریلز اینستاگرام</div>
+<div class="muted">میز هوشمند آماده‌سازی ریلز اینستاگرام</div>
 </div>
 <button class="btn secondary hidden" id="logout">خروج</button>
-</header><section class="panel" id="login">
+</header>
+
+<section class="panel" id="login">
 <h2>ورود به پنل</h2>
 <label>رمز مدیریت</label>
 <input id="password" type="password" autocomplete="current-password" placeholder="رمز پنل">
 <button class="btn primary" id="loginBtn">ورود</button>
 <div id="loginMsg" class="err"></div>
-</section><div id="app" class="hidden"><section class="panel">
+</section>
+
+<div id="app" class="hidden">
+
+<section class="panel">
 <div class="stats">
 <div class="stat"><span class="muted">کل ریلزهای آماده</span><b id="total">۰</b></div>
 <div class="stat"><span class="muted">آماده بررسی</span><b id="ready">۰</b></div>
 <div class="stat"><span class="muted">منتشرشده توسط شما</span><b id="shared">۰</b></div>
 </div>
+
 <p class="notice muted">
-برنامه برای روزی یک ریلز و ساعت هدف ۲۰:۰۰ تنظیم شده است.
-این پنل به فیسبوک یا متا وصل نمی‌شود و خودش چیزی در اینستاگرام منتشر نمی‌کند؛ انتشار نهایی با دکمه Share توسط شما انجام می‌شود.
+هدف روزانه یک ریلز در ساعت ۲۰:۰۰ است.
+انتشار نهایی با خود شماست و برنامه بدون اجازه شما چیزی در اینستاگرام منتشر نمی‌کند.
 </p>
-</section><div class="grid"><section class="panel">
-<h2>ثبت ریلز آماده انتشار</h2><button class="btn primary" id="autoPick" style="width:100%">
-🎥 پیدا کردن خودکار ویدئوی اسکانیا
-</button><div class="muted" style="margin-top:8px">
-جستجو از منابع رایگان انجام می‌شود. فقط نتایجی که اطلاعات مجوز قابل قبول دارند نمایش داده می‌شوند. قبل از انتشار، صفحه منبع و شرایط مجوز را بررسی کن.
-</div><div id="pickMsg" class="muted" style="margin-top:8px"></div><label>عنوان ریلز</label>
-<input id="title" placeholder="مثلاً یک نکته جالب درباره اسکانیا">
+</section>
+
+<div class="grid">
+
+<section class="panel">
+<h2>🎥 انتخاب خودکار کلیپ</h2>
+
+<button class="btn primary category" id="scaniaBtn">
+🚛 جستجوی کلیپ اسکانیا
+</button>
+
+<button class="btn primary category" id="kurdishBtn">
+❤️ جستجوی کلیپ‌های کوردی
+</button>
+
+<button class="btn primary category" id="kurdishScaniaBtn">
+🚛 جستجوی اسکانیا با موضوع کوردستان
+</button>
+
+<div id="pickMsg" class="muted" style="margin-top:12px">
+یک دسته را انتخاب کن تا جستجو شروع شود.
+</div>
+
+<hr style="border-color:#344763;margin:18px 0">
+
+<h2>ثبت ریلز آماده انتشار</h2>
+
+<label>عنوان ریلز</label>
+<input id="title" placeholder="عنوان کلیپ">
 
 <label>بارگذاری ویدئو (MP4 یا MOV)</label>
 <input id="file" type="file" accept="video/mp4,video/quicktime">
@@ -79,13 +110,15 @@ textarea{min-height:100px;line-height:1.8}
 <input id="url" type="url" placeholder="https://.../video.mp4">
 
 <label>کپشن و هشتگ‌ها</label>
+<textarea id="caption" placeholder="متن کپشن و هشتگ‌ها"></textarea>
 
-<textarea id="caption" placeholder="متن کپشن و هشتگ‌ها"></textarea><label>لینک منبع ویدئو</label>
+<label>لینک منبع ویدئو</label>
 <input id="source" type="url" placeholder="https://...">
 
 <label>مجوز بازنشر / مالکیت محتوا</label>
+<textarea id="license" placeholder="جزئیات مجوز یا اجازه صاحب اثر"></textarea>
 
-<textarea id="license" placeholder="جزئیات مجوز یا اجازه صاحب اثر"></textarea><div class="row">
+<div class="row">
 <div>
 <label>تاریخ یادآوری</label>
 <input id="date" type="date">
@@ -94,23 +127,36 @@ textarea{min-height:100px;line-height:1.8}
 <label>ساعت یادآوری</label>
 <input id="time" type="time" value="20:00">
 </div>
-</div><button class="btn primary" id="add">ذخیره ریلز</button>
+</div>
 
+<button class="btn primary" id="add">ذخیره ریلز</button>
 <div id="formMsg" class="muted"></div>
-</section><section class="panel">
-<h2>فهرست ریلزها</h2>
+</section>
+
+<section class="panel">
+<h2>📋 فهرست ریلزها</h2>
 <div id="queue" class="muted">در حال بارگذاری...</div>
-</section></div><section class="panel">
+</section>
+
+</div>
+
+<section class="panel">
 <h2>راهنمای استفاده</h2>
 <p class="muted">
-۱) روی دکمه پیدا کردن خودکار ویدئوی اسکانیا بزن.
-۲) منبع و مجوز ویدئو را بررسی کن.
-۳) کپشن و اطلاعات را تکمیل کن و ریلز را ذخیره کن.
-۴) در زمان مناسب ویدئو و کپشن را در اینستاگرام انتخاب و خودت Share کن.
-توجه: پیدا شدن ویدئو به معنی تضمین اجازه بازنشر نیست؛ شرایط مجوز را در صفحه اصلی منبع بررسی کن.
+۱. دسته کلیپ موردنظر را انتخاب کن.<br>
+۲. منبع و مجوز ویدئو را بررسی کن.<br>
+۳. کپشن و اطلاعات را تکمیل کن.<br>
+۴. ریلز را ذخیره کن.<br>
+۵. در زمان مناسب خودت در اینستاگرام منتشر کن.
+<br><br>
+توجه: جستجوی کوردی بر اساس عنوان و اطلاعات فایل انجام می‌شود و زبان گفتاری داخل ویدئو را تضمین نمی‌کند. وجود مجوز در نتیجه جستجو هم جای بررسی شرایط کامل مجوز را نمی‌گیرد.
 </p>
-</section></div>
-</main><script>
+</section>
+
+</div>
+</main>
+
+<script>
 const $=id=>document.getElementById(id);
 let items=[];
 
@@ -251,17 +297,21 @@ root.append(box);
 });
 }
 
-/* انتخاب خودکار ویدئوی اسکانیا */
-$('autoPick').onclick=async()=>{
+/* جستجوی دسته انتخاب‌شده */
+async function autoPick(category){
 const msg=$('pickMsg');
-msg.textContent='در حال جستجوی ویدئوی اسکانیا...';
+
+msg.textContent='در حال جستجو...';
 msg.className='muted';
-$('autoPick').disabled=true;
+
+['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>{
+$(id).disabled=true;
+});
 
 try{
-const p=await api('/api/auto-pick');
+const p=await api('/api/auto-pick?category='+encodeURIComponent(category));
 
-$('title').value=p.title||'ویدئوی اسکانیا';
+$('title').value=p.title||'کلیپ جدید';
 $('url').value=p.videoUrl||'';
 $('source').value=p.sourceUrl||'';
 
@@ -269,18 +319,28 @@ $('license').value=
 'مجوز: '+(p.license||'')+
 ' | صاحب اثر: '+(p.author||'')+
 ' | صفحه مجوز: '+(p.licenseUrl||'')+
-' | لطفاً شرایط مجوز و محدودیت‌های استفاده را در منبع بررسی کن.';
+' | شرایط کامل مجوز را در صفحه منبع بررسی کن.';
 
-msg.textContent='یک ویدئو پیدا شد. منبع و مجوز را بررسی کن؛ انتخاب خودکار به‌تنهایی تضمین‌کننده مجاز بودن بازنشر نیست.';
+msg.textContent=
+'کلیپ پیدا شد. تعداد نتایج واجد شرایط: '+
+(p.totalFound||1)+
+'. قبل از انتشار شرایط مجوز را بررسی کن.';
+
 msg.className='ok';
 
 }catch(e){
 msg.textContent=e.message;
 msg.className='err';
 }finally{
-$('autoPick').disabled=false;
+['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>{
+$(id).disabled=false;
+});
 }
-};
+}
+
+$('scaniaBtn').onclick=()=>autoPick('scania');
+$('kurdishBtn').onclick=()=>autoPick('kurdish');
+$('kurdishScaniaBtn').onclick=()=>autoPick('kurdish-scania');
 
 /* ذخیره ریلز */
 $('add').onclick=async()=>{
@@ -338,5 +398,6 @@ String(now.getDate()).padStart(2,'0')
 ].join('-');
 
 check();
-</script></body>
+</script>
+</body>
 </html>
