@@ -109,14 +109,12 @@ app.get('/api/me', (req, res) => {
 });
 
 app.get('/api/status', auth, (_, res) => {
-  const items = readItems();
-
   res.json({
     mode: 'manual-share',
     dailyTarget: 1,
     reminderTime: '20:00',
     timezone: process.env.TIMEZONE || 'Europe/Berlin',
-    queue: items
+    queue: readItems()
   });
 });
 
@@ -124,79 +122,119 @@ app.get('/api/queue', auth, (_, res) => {
   res.json(readItems());
 });
 
-/* جستجوی خودکار ویدئوهای اسکانیا در ویکی‌مدیا */
+/* جستجوی کلیپ اسکانیا و کلیپ‌های کوردی */
 app.get('/api/auto-pick', auth, async (req, res) => {
   try {
-    const params = new URLSearchParams({
-      action: 'query',
-      generator: 'search',
-      gsrsearch: 'Scania truck filemime:video',
-      gsrnamespace: '6',
-      gsrlimit: '30',
-      prop: 'imageinfo',
-      iiprop: 'url|extmetadata',
-      format: 'json'
-    });
+    const category = String(req.query.category || 'scania');
 
-    const response = await fetch(
-      `https://commons.wikimedia.org/w/api.php?${params}`,
-      {
-        headers: {
-          'User-Agent': 'MohammadianAI/1.0'
-        }
-      }
-    );
+    const searches = {
+      scania: [
+        'Scania truck filemime:video',
+        'Scania lorry filemime:video',
+        'Scania S500 filemime:video',
+        'Scania truck driving filemime:video'
+      ],
 
-    if (!response.ok) {
-      throw new Error('Wikimedia request failed');
-    }
+      kurdish: [
+        'Kurdish music filemime:video',
+        'Kurdish culture filemime:video',
+        'Kurdish dance filemime:video',
+        'Kurdistan filemime:video',
+        'Kurdish festival filemime:video'
+      ],
 
-    const data = await response.json();
-    const pages = Object.values(data.query?.pages || {});
+      'kurdish-scania': [
+        'Kurdish Scania truck filemime:video',
+        'Kurdistan truck filemime:video',
+        'Scania Kurdistan filemime:video'
+      ]
+    };
 
-    const videos = pages.filter(page => {
-      const info = page.imageinfo?.[0];
-      if (!info?.url) return false;
-
-      const meta = info.extmetadata || {};
-      const license = meta.LicenseShortName?.value || '';
-
-      const isVideo = /\.(webm|ogv|ogg|mp4)$/i.test(info.url);
-
-      const allowedLicense =
-        /CC BY(?:-SA)?|CC0|Public domain/i.test(license);
-
-      return isVideo && allowedLicense;
-    });
-
-    if (!videos.length) {
-      return res.status(404).json({
-        error: 'ویدئویی با مجوز قابل قبول پیدا نشد.'
+    if (!searches[category]) {
+      return res.status(400).json({
+        error: 'دسته‌بندی انتخاب‌شده معتبر نیست.'
       });
     }
 
-    videos.sort((a, b) => {
-      const aTitle = a.title.toLowerCase();
-      const bTitle = b.title.toLowerCase();
+    const allVideos = [];
 
-      const aMatch = aTitle.includes('scania') ? 1 : 0;
-      const bMatch = bTitle.includes('scania') ? 1 : 0;
+    for (const searchText of searches[category]) {
+      const params = new URLSearchParams({
+        action: 'query',
+        generator: 'search',
+        gsrsearch: searchText,
+        gsrnamespace: '6',
+        gsrlimit: '30',
+        prop: 'imageinfo',
+        iiprop: 'url|extmetadata',
+        format: 'json'
+      });
 
-      return bMatch - aMatch;
-    });
+      const response = await fetch(
+        `https://commons.wikimedia.org/w/api.php?${params}`,
+        {
+          headers: {
+            'User-Agent': 'MohammadianAI/1.0'
+          }
+        }
+      );
 
-    const selected = videos[0];
-    const info = selected.imageinfo[0];
-    const meta = info.extmetadata || {};
+      if (!response.ok) continue;
+
+      const data = await response.json();
+      const pages = Object.values(data.query?.pages || {});
+
+      for (const page of pages) {
+        const info = page.imageinfo?.[0];
+        if (!info?.url) continue;
+
+        const meta = info.extmetadata || {};
+        const license = meta.LicenseShortName?.value || '';
+
+        const isVideo = /\.(webm|ogv|ogg|mp4)$/i.test(info.url);
+
+        const allowedLicense =
+          /CC BY(?:-SA)?(?:\s|$)|CC0|Public domain/i.test(license);
+
+        if (isVideo && allowedLicense) {
+          allVideos.push({
+            page,
+            info,
+            license,
+            meta
+          });
+        }
+      }
+    }
+
+    const unique = [
+      ...new Map(
+        allVideos.map(item => [item.info.url, item])
+      ).values()
+    ];
+
+    if (!unique.length) {
+      return res.status(404).json({
+        error: 'کلیپ دارای مجوز قابل قبول پیدا نشد. می‌توانیم ایده اختصاصی بسازیم.'
+      });
+    }
+
+    const selected = unique[
+      Math.floor(Math.random() * unique.length)
+    ];
+
+    const { page, info, license, meta } = selected;
 
     res.json({
-      title: selected.title,
+      title: page.title,
       videoUrl: info.url,
       sourceUrl: info.descriptionurl,
-      license: meta.LicenseShortName?.value || '',
+      license,
       author: meta.Artist?.value || '',
       licenseUrl: meta.LicenseUrl?.value || '',
-      attributionRequired: true
+      attributionRequired: true,
+      category,
+      totalFound: unique.length
     });
 
   } catch (error) {
