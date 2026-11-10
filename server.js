@@ -124,6 +124,90 @@ app.get('/api/queue', auth, (_, res) => {
   res.json(readItems());
 });
 
+/* جستجوی خودکار ویدئوهای اسکانیا در ویکی‌مدیا */
+app.get('/api/auto-pick', auth, async (req, res) => {
+  try {
+    const params = new URLSearchParams({
+      action: 'query',
+      generator: 'search',
+      gsrsearch: 'Scania truck filemime:video',
+      gsrnamespace: '6',
+      gsrlimit: '30',
+      prop: 'imageinfo',
+      iiprop: 'url|extmetadata',
+      format: 'json'
+    });
+
+    const response = await fetch(
+      `https://commons.wikimedia.org/w/api.php?${params}`,
+      {
+        headers: {
+          'User-Agent': 'MohammadianAI/1.0'
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Wikimedia request failed');
+    }
+
+    const data = await response.json();
+    const pages = Object.values(data.query?.pages || {});
+
+    const videos = pages.filter(page => {
+      const info = page.imageinfo?.[0];
+      if (!info?.url) return false;
+
+      const meta = info.extmetadata || {};
+      const license = meta.LicenseShortName?.value || '';
+
+      const isVideo = /\.(webm|ogv|ogg|mp4)$/i.test(info.url);
+
+      const allowedLicense =
+        /CC BY(?:-SA)?|CC0|Public domain/i.test(license);
+
+      return isVideo && allowedLicense;
+    });
+
+    if (!videos.length) {
+      return res.status(404).json({
+        error: 'ویدئویی با مجوز قابل قبول پیدا نشد.'
+      });
+    }
+
+    videos.sort((a, b) => {
+      const aTitle = a.title.toLowerCase();
+      const bTitle = b.title.toLowerCase();
+
+      const aMatch = aTitle.includes('scania') ? 1 : 0;
+      const bMatch = bTitle.includes('scania') ? 1 : 0;
+
+      return bMatch - aMatch;
+    });
+
+    const selected = videos[0];
+    const info = selected.imageinfo[0];
+    const meta = info.extmetadata || {};
+
+    res.json({
+      title: selected.title,
+      videoUrl: info.url,
+      sourceUrl: info.descriptionurl,
+      license: meta.LicenseShortName?.value || '',
+      author: meta.Artist?.value || '',
+      licenseUrl: meta.LicenseUrl?.value || '',
+      attributionRequired: true
+    });
+
+  } catch (error) {
+    console.error('Auto pick error:', error);
+
+    res.status(500).json({
+      error: 'جستجوی خودکار انجام نشد. دوباره تلاش کنید.'
+    });
+  }
+});
+
 app.post('/api/upload', auth, upload.single('video'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({
@@ -185,7 +269,8 @@ app.patch('/api/queue/:id', auth, (req, res) => {
     return res.status(404).json({ error: 'مورد پیدا نشد.' });
   }
 
-  if (req.body.status && ['ready_for_review', 'shared', 'archived'].includes(req.body.status)) {
+  if (req.body.status &&
+      ['ready_for_review', 'shared', 'archived'].includes(req.body.status)) {
     item.status = req.body.status;
   }
 
