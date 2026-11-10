@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101820">
 <title>Mohammadian AI</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#0b111b;color:#fff;font-family:Tahoma,Arial}
@@ -38,9 +39,14 @@ textarea{min-height:100px}
 .err{color:#ff9caa;font-size:13px;line-height:2}
 .ok{color:#65e5b4;font-size:13px;line-height:2}
 .notice{border-right:3px solid #d0a44e;padding:10px;background:#263447;border-radius:10px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.card{height:135px}}
+@media(max-width:650px){
+.grid{grid-template-columns:1fr}
+.cards{grid-template-columns:1fr 1fr}
+.card{height:135px}
+}
 </style>
 </head>
+
 <body>
 <main class="wrap">
 
@@ -51,6 +57,7 @@ textarea{min-height:100px}
 <p>سامانه اختصاصی مدیریت ریلز و محتوای اسکانیا</p>
 </div>
 </div>
+
 <div class="flag"></div>
 
 <section class="panel" id="login">
@@ -91,16 +98,20 @@ textarea{min-height:100px}
 </section>
 
 <div class="grid">
+
 <section class="panel">
 <h2>🎬 انتخاب هوشمند کلیپ</h2>
+
 <button class="btn gold" id="scaniaBtn">🚛 جستجوی کلیپ اسکانیا</button>
 <button class="btn dark" id="kurdishBtn">❤️ جستجوی کلیپ کوردی</button>
 <button class="btn green" id="kurdishScaniaBtn">🚛 اسکانیا و کوردستان</button>
+
 <div id="pickMsg" class="muted">یک دسته را انتخاب کنید.</div>
 
 <hr style="border-color:#34465a;margin:20px 0">
 
 <h2>➕ ثبت ریلز جدید</h2>
+
 <label>عنوان ریلز</label>
 <input id="title" placeholder="عنوان کلیپ">
 
@@ -128,18 +139,25 @@ textarea{min-height:100px}
 
 <button class="btn gold" id="add" type="button">💾 ذخیره ریلز</button>
 <div id="formMsg" class="muted" role="status" aria-live="polite"></div>
+
 </section>
 
 <section class="panel">
 <h2>📋 فهرست ریلزهای آماده</h2>
 <div id="queue" class="muted">در حال بارگذاری...</div>
 </section>
+
 </div>
 
 <section class="panel">
 <h2>🇮🇷 درباره برنامه</h2>
-<p class="muted">Mohammadian AI سامانه اختصاصی آماده‌سازی محتوای اینستاگرام است. انتشار نهایی محتوا با تأیید شما انجام می‌شود. فقط محتوایی را بازنشر کنید که مجوز آن را بررسی کرده‌اید.</p>
+<p class="muted">
+Mohammadian AI سامانه اختصاصی آماده‌سازی محتوای اینستاگرام است.
+انتشار نهایی محتوا با تأیید شما انجام می‌شود.
+فقط محتوایی را بازنشر کنید که مجوز آن را بررسی کرده‌اید.
+</p>
 </section>
+
 </div>
 </main>
 
@@ -152,10 +170,18 @@ const headers={
 ...(opt.body instanceof FormData?{}:{'Content-Type':'application/json'}),
 ...(opt.headers||{})
 };
-const r=await fetch(url,{...opt,headers,credentials:'same-origin'});
+
+const r=await fetch(url,{
+...opt,
+headers,
+credentials:'same-origin'
+});
+
 let d={};
 try{d=await r.json()}catch{}
+
 if(!r.ok)throw Error(d.error||'خطای ارتباط با سرور');
+
 return d;
 }
 
@@ -178,13 +204,20 @@ $('loginBtn').addEventListener('click',async()=>{
 const btn=$('loginBtn');
 btn.disabled=true;
 $('loginMsg').textContent='در حال ورود...';
+
 try{
-await api('/api/login',{method:'POST',body:JSON.stringify({password:$('password').value})});
+await api('/api/login',{
+method:'POST',
+body:JSON.stringify({password:$('password').value})
+});
+
 $('loginMsg').textContent='';
 showApp(true);
 await refresh();
+
 }catch(e){
 $('loginMsg').textContent=e.message;
+
 }finally{
 btn.disabled=false;
 }
@@ -195,27 +228,112 @@ if(e.key==='Enter')$('loginBtn').click();
 });
 
 $('logout').addEventListener('click',async()=>{
-try{await api('/api/logout',{method:'POST'});}catch(e){}
+try{
+await api('/api/logout',{method:'POST'});
+}catch(e){}
+
 showApp(false);
 });
 
 async function refresh(){
 const s=await api('/api/status');
+
 items=s.queue||[];
+
 $('total').textContent=items.length;
 $('ready').textContent=items.filter(x=>x.status==='ready_for_review').length;
 $('shared').textContent=items.filter(x=>x.status==='shared').length;
+
 render();
 }
 
+/* ارسال ویدئو به منوی اشتراک‌گذاری گوشی */
+
+async function shareToInstagram(p){
+
+const caption=p.caption||'';
+
+try{
+
+if(caption&&navigator.clipboard&&navigator.clipboard.writeText){
+await navigator.clipboard.writeText(caption);
+}
+
+const response=await fetch(p.videoUrl,{
+credentials:'same-origin'
+});
+
+if(!response.ok){
+throw Error('دانلود ویدئو از سرور انجام نشد.');
+}
+
+const blob=await response.blob();
+
+if(!blob.type.startsWith('video/')){
+throw Error('لینک، فایل ویدئویی برنگرداند.');
+}
+
+const ext=blob.type.includes('quicktime')?'mov':'mp4';
+
+const safeName=(p.title||'mohammadian-reel')
+.replace(/[\\/:*?"<>|]/g,'-');
+
+const file=new File(
+[blob],
+safeName+'.'+ext,
+{type:blob.type}
+);
+
+if(
+!navigator.share||
+!navigator.canShare||
+!navigator.canShare({files:[file]})
+){
+throw Error('اشتراک‌گذاری فایل در این مرورگر پشتیبانی نمی‌شود.');
+}
+
+await navigator.share({
+files:[file],
+title:p.title||'Instagram Reel',
+text:caption
+});
+
+alert(
+'منوی اشتراک‌گذاری باز شد. Instagram را انتخاب کن. اگر کپشن منتقل نشد، آن را Paste کن. بعد از انتشار واقعی، دکمه «من در اینستاگرام منتشر کردم» را بزن.'
+);
+
+}catch(e){
+
+if(e.name==='AbortError')return;
+
+try{
+if(caption&&navigator.clipboard){
+await navigator.clipboard.writeText(caption);
+}
+}catch(_){}
+
+window.open(p.videoUrl,'_blank','noopener');
+
+alert(
+'ویدئو در صفحه جدا باز شد و کپشن در صورت اجازه مرورگر کپی شد. آن را دانلود کن و در Instagram از گالری انتخاب کن. هنوز منتشر نشده است.'
+);
+
+}
+
+}
+
 function render(){
+
 const root=$('queue');
 root.innerHTML='';
+
 if(!items.length){
 root.textContent='هنوز ریلزی ثبت نشده است.';
 return;
 }
+
 items.slice().reverse().forEach(p=>{
+
 const box=document.createElement('div');
 box.className='item';
 
@@ -225,7 +343,11 @@ box.append(title);
 
 const status=document.createElement('p');
 status.className='muted';
-status.textContent=p.status==='shared'?'منتشرشده توسط شما':'آماده بررسی و انتشار';
+status.textContent=
+p.status==='shared'
+?'منتشرشده توسط شما'
+:'آماده بررسی و انتشار';
+
 box.append(status);
 
 const time=document.createElement('p');
@@ -253,52 +375,110 @@ lic.textContent='مجوز/منبع: '+(p.licenseNote||'');
 box.append(lic);
 
 if(p.status!=='shared'){
+
+const shareBtn=document.createElement('button');
+shareBtn.className='btn gold';
+shareBtn.textContent='📲 ارسال ویدئو به اینستاگرام';
+
+shareBtn.onclick=()=>shareToInstagram(p);
+
+box.append(shareBtn);
+
 const done=document.createElement('button');
 done.className='btn green';
 done.textContent='من در اینستاگرام منتشر کردم';
+
 done.onclick=async()=>{
 try{
-await api('/api/queue/'+p.id,{method:'PATCH',body:JSON.stringify({status:'shared'})});
+await api('/api/queue/'+p.id,{
+method:'PATCH',
+body:JSON.stringify({status:'shared'})
+});
+
 await refresh();
-}catch(e){alert(e.message);}
+
+}catch(e){
+alert(e.message);
+}
 };
+
 box.append(done);
+
 }
 
 const del=document.createElement('button');
 del.className='btn red';
 del.textContent='حذف';
+
 del.onclick=async()=>{
+
 if(confirm('این ریلز حذف شود؟')){
+
 try{
 await api('/api/queue/'+p.id,{method:'DELETE'});
 await refresh();
-}catch(e){alert(e.message);}
+
+}catch(e){
+alert(e.message);
 }
+
+}
+
 };
+
 box.append(del);
 root.append(box);
+
 });
+
 }
 
 async function autoPick(category){
+
 const msg=$('pickMsg');
+
 msg.textContent='در حال جستجو...';
-['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>$(id).disabled=true);
+
+[
+'scaniaBtn',
+'kurdishBtn',
+'kurdishScaniaBtn'
+].forEach(id=>$(id).disabled=true);
+
 try{
-const p=await api('/api/auto-pick?category='+encodeURIComponent(category));
+
+const p=await api(
+'/api/auto-pick?category='+encodeURIComponent(category)
+);
+
 $('title').value=p.title||'کلیپ جدید';
 $('url').value=p.videoUrl||'';
 $('source').value=p.sourceUrl||'';
-$('license').value='مجوز: '+(p.license||'')+' | صاحب اثر: '+(p.author||'')+' | صفحه مجوز: '+(p.licenseUrl||'')+' | شرایط کامل مجوز را بررسی کن.';
+
+$('license').value=
+'مجوز: '+(p.license||'')+
+' | صاحب اثر: '+(p.author||'')+
+' | صفحه مجوز: '+(p.licenseUrl||'')+
+' | شرایط کامل مجوز را بررسی کن.';
+
 msg.textContent='کلیپ پیدا شد؛ قبل از انتشار مجوز را بررسی کن.';
 msg.className='ok';
+
 }catch(e){
+
 msg.textContent=e.message;
 msg.className='err';
+
 }finally{
-['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>$(id).disabled=false);
+
+[
+'scaniaBtn',
+'kurdishBtn',
+'kurdishScaniaBtn'
+].forEach(id=>$(id).disabled=false);
+
 }
+
 }
 
 $('scaniaBtn').onclick=()=>autoPick('scania');
@@ -306,13 +486,20 @@ $('kurdishBtn').onclick=()=>autoPick('kurdish');
 $('kurdishScaniaBtn').onclick=()=>autoPick('kurdish-scania');
 
 $('file').addEventListener('change',()=>{
+
 const f=$('file').files[0];
-$('fileInfo').textContent=f?'انتخاب شد: '+f.name+' ('+(f.size/1024/1024).toFixed(1)+' مگابایت)':'هنوز ویدئویی انتخاب نشده است.';
+
+$('fileInfo').textContent=f
+?'انتخاب شد: '+f.name+' ('+(f.size/1024/1024).toFixed(1)+' مگابایت)'
+:'هنوز ویدئویی انتخاب نشده است.';
+
 });
 
 $('add').addEventListener('click',async()=>{
+
 const btn=$('add');
 const msg=$('formMsg');
+
 const selectedFile=$('file').files[0];
 const videoLink=$('url').value.trim();
 
@@ -324,37 +511,59 @@ msg.className=kind;
 if(btn.disabled)return;
 
 try{
+
 if(!selectedFile&&!videoLink){
 throw Error('ابتدا یک ویدئو انتخاب کن یا لینک مستقیم وارد کن.');
 }
 
 if(selectedFile){
+
 if(!selectedFile.type.startsWith('video/')){
 throw Error('فایل انتخاب‌شده ویدئو نیست.');
 }
+
 if(selectedFile.size>4*1024*1024){
 throw Error('حجم فایل بیشتر از ۴ مگابایت است. در این نسخه آپلود مستقیم فایل بزرگ روی Vercel پشتیبانی نمی‌شود.');
 }
+
 }
 
 const date=$('date').value;
 const time=$('time').value;
-if(!date||!time)throw Error('تاریخ و ساعت یادآوری را انتخاب کن.');
-if(!$('license').value.trim())throw Error('منبع و مجوز اجازه بازنشر را وارد کن.');
+
+if(!date||!time){
+throw Error('تاریخ و ساعت یادآوری را انتخاب کن.');
+}
+
+if(!$('license').value.trim()){
+throw Error('منبع و مجوز اجازه بازنشر را وارد کن.');
+}
 
 btn.disabled=true;
 btn.textContent='⏳ در حال ذخیره...';
+
 say('در حال آماده‌سازی ریلز...','muted');
 
 let videoUrl=videoLink;
 
 if(selectedFile){
+
 say('در حال بارگذاری ویدئو...','muted');
+
 const fd=new FormData();
 fd.append('video',selectedFile);
-const uploaded=await api('/api/upload',{method:'POST',body:fd});
-if(!uploaded.videoUrl)throw Error('سرور لینک ویدئو را برنگرداند.');
+
+const uploaded=await api('/api/upload',{
+method:'POST',
+body:fd
+});
+
+if(!uploaded.videoUrl){
+throw Error('سرور لینک ویدئو را برنگرداند.');
+}
+
 videoUrl=uploaded.videoUrl;
+
 }
 
 const scheduledAt=new Date(date+'T'+time).toISOString();
@@ -362,12 +571,14 @@ const scheduledAt=new Date(date+'T'+time).toISOString();
 await api('/api/queue',{
 method:'POST',
 body:JSON.stringify({
+
 title:$('title').value.trim()||selectedFile?.name||'ریلز جدید',
 caption:$('caption').value,
 videoUrl:videoUrl,
 sourceUrl:$('source').value.trim(),
 licenseNote:$('license').value.trim(),
 scheduledAt:scheduledAt
+
 })
 });
 
@@ -384,14 +595,20 @@ $('fileInfo').textContent='هنوز ویدئویی انتخاب نشده است.
 await refresh();
 
 }catch(e){
+
 say('❌ '+(e.message||'ذخیره انجام نشد. دوباره تلاش کن.'),'err');
+
 }finally{
+
 btn.disabled=false;
 btn.textContent='💾 ذخیره ریلز';
+
 }
+
 });
 
 const now=new Date();
+
 $('date').value=[
 now.getFullYear(),
 String(now.getMonth()+1).padStart(2,'0'),
@@ -399,6 +616,7 @@ String(now.getDate()).padStart(2,'0')
 ].join('-');
 
 check();
+
 </script>
 </body>
 </html>
