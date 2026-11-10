@@ -1,155 +1,245 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101827">
-<title>Mohammadian AI | مدیریت ریلز</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101820">
+<title>Mohammadian AI</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#0b1220;color:#f4f6ff;font-family:Tahoma,Arial,sans-serif}
-.wrap{max-width:1080px;margin:auto;padding:22px 14px}
-.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.brand{font-size:22px;font-weight:bold}
-.muted{color:#aab5cc;font-size:12px;line-height:1.9}
-.panel{background:#151f33;border:1px solid #2b3a56;border-radius:17px;padding:17px;margin:16px 0}
+body{
+margin:0;
+background:#0b111b;
+color:#fff;
+font-family:Tahoma,Arial;
+}
+.hidden{display:none!important}
+.wrap{max-width:1100px;margin:auto;padding:18px}
+.hero{
+position:relative;
+min-height:240px;
+border-radius:24px;
+overflow:hidden;
+background:
+linear-gradient(0deg,#07101af2,#07101a22),
+url('https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=1200')
+center/cover;
+border:1px solid #b8954b;
+display:flex;
+align-items:end;
+padding:25px;
+}
+.brand{font-size:25px;font-weight:bold;color:#f3d58a}
+.hero h1{font-size:27px;margin:10px 0}
+.hero p{color:#eee;font-size:13px}
+.flag{
+height:7px;
+background:linear-gradient(to left,#239b56 33%,white 33%,white 66%,#e63946 66%);
+border-radius:10px;
+margin:16px 0;
+}
+.panel{
+background:linear-gradient(145deg,#172434,#101923);
+border:1px solid #34465a;
+border-radius:20px;
+padding:20px;
+margin:18px 0;
+box-shadow:0 10px 30px #0005;
+}
+h2{font-size:17px;color:#f3d58a}
+label{display:block;margin:12px 0 7px;font-size:13px}
+input,textarea{
+width:100%;
+padding:13px;
+border-radius:12px;
+border:1px solid #42566c;
+background:#0a1420;
+color:white;
+font:inherit;
+}
+textarea{min-height:100px}
+.btn{
+width:100%;
+padding:14px;
+border:0;
+border-radius:12px;
+margin:7px 0;
+font:inherit;
+font-weight:bold;
+cursor:pointer;
+}
+.gold{background:linear-gradient(120deg,#b58b42,#f5d88b);color:#17202b}
+.dark{background:#25394d;color:white}
+.green{background:#176b4b;color:white}
+.red{background:#71333b;color:white}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+}
+.card{
+height:180px;
+border-radius:17px;
+overflow:hidden;
+position:relative;
+background-size:cover;
+background-position:center;
+border:1px solid #b8954b;
+display:flex;
+align-items:end;
+padding:15px;
+}
+.card span{
+background:#07101bdc;
+padding:10px;
+border-radius:10px;
+font-weight:bold;
+}
 .stats{display:flex;gap:10px;flex-wrap:wrap}
-.stat{background:#202d47;border-radius:12px;padding:12px;flex:1;min-width:110px}
-.stat b{display:block;font-size:23px;margin-top:5px}
-h2{font-size:16px;margin:0 0 14px}
-label{display:block;font-size:12px;color:#cbd5e8;margin:11px 0 6px}
-input,textarea{width:100%;background:#0d1729;border:1px solid #344763;border-radius:10px;padding:11px;color:white;font:inherit;font-size:13px}
-textarea{min-height:100px;line-height:1.8}
-.btn{border:0;border-radius:10px;padding:11px 15px;font:inherit;font-size:13px;cursor:pointer;margin:8px 4px 0 0}
-.btn:disabled{opacity:.5;cursor:wait}
-.primary{background:#8274ff;color:white}
-.secondary{background:#293a58;color:white}
-.danger{background:#542b38;color:#ffd0d8}
-.success{background:#155442;color:#c9ffea}
-.hidden{display:none}
-.item{padding:13px;border-radius:12px;background:#0d1729;border:1px solid #2b3a56;margin:10px 0}
-.item strong{font-size:13px}
-.tag{color:#b2a8ff;font-size:11px}
-.err{color:#ff9daa;font-size:12px;white-space:pre-wrap}
-.ok{color:#69e5bd;font-size:12px}
-.row{display:flex;gap:9px;flex-wrap:wrap}
-.row>*{flex:1;min-width:130px}
-.notice{border-right:3px solid #8274ff;padding:9px 12px;background:#111b2e;border-radius:8px}
-.item a{color:#b9b0ff;overflow-wrap:anywhere}
-.category{width:100%;margin:5px 0}
-@media(max-width:700px){.grid{grid-template-columns:1fr}}
+.stat{
+flex:1;
+min-width:100px;
+padding:14px;
+background:#223247;
+border-radius:13px;
+}
+.stat b{display:block;font-size:24px;color:#f3d58a;margin-top:8px}
+.muted{color:#b7c3d1;font-size:12px;line-height:2}
+.item{padding:14px;background:#0a1420;border-radius:12px;margin:10px 0}
+.item a{color:#f3d58a;overflow-wrap:anywhere}
+.err{color:#ff9caa;font-size:12px}
+.ok{color:#65e5b4;font-size:12px}
+.notice{border-right:3px solid #d0a44e;padding:10px;background:#263447;border-radius:10px}
+@media(max-width:650px){
+.grid{grid-template-columns:1fr}
+.hero{min-height:210px}
+.cards{grid-template-columns:1fr 1fr}
+.card{height:145px}
+}
 </style>
 </head>
+
 <body>
 <main class="wrap">
 
-<header class="head">
+<div class="hero">
 <div>
-<div class="brand">✦ Mohammadian AI</div>
-<div class="muted">میز هوشمند آماده‌سازی ریلز اینستاگرام</div>
+<div class="brand">🇮🇷 MOHAMMADIAN AI</div>
+<h1>قدرت، اصالت، هوشمندی</h1>
+<p>سامانه اختصاصی مدیریت ریلز و محتوای اسکانیا</p>
 </div>
-<button class="btn secondary hidden" id="logout">خروج</button>
-</header>
+</div>
+
+<div class="flag"></div>
 
 <section class="panel" id="login">
-<h2>ورود به پنل</h2>
+<h2>🔐 ورود اختصاصی به سامانه</h2>
+<p class="muted">به پنل مدیریت هوشمند Mohammadian AI خوش آمدید.</p>
 <label>رمز مدیریت</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="رمز پنل">
-<button class="btn primary" id="loginBtn">ورود</button>
+<input id="password" type="password" placeholder="رمز ورود">
+<button class="btn gold" id="loginBtn">ورود به برنامه ←</button>
 <div id="loginMsg" class="err"></div>
 </section>
 
 <div id="app" class="hidden">
 
+<header class="panel">
+<div class="brand">✦ پنل مدیریت Mohammadian AI</div>
+<p class="muted">خوش آمدید؛ آماده مدیریت محتوای امروز هستید.</p>
+<button class="btn red" id="logout">خروج از حساب</button>
+</header>
+
 <section class="panel">
+<h2>📊 آمار فعالیت</h2>
 <div class="stats">
-<div class="stat"><span class="muted">کل ریلزهای آماده</span><b id="total">۰</b></div>
-<div class="stat"><span class="muted">آماده بررسی</span><b id="ready">۰</b></div>
-<div class="stat"><span class="muted">منتشرشده توسط شما</span><b id="shared">۰</b></div>
+<div class="stat">کل ریلزها<b id="total">۰</b></div>
+<div class="stat">آماده انتشار<b id="ready">۰</b></div>
+<div class="stat">منتشرشده<b id="shared">۰</b></div>
+</div>
+<p class="notice muted">🎯 هدف روزانه: آماده‌سازی یک ریلز در ساعت ۲۰:۰۰</p>
+</section>
+
+<section class="panel">
+<h2>🚛 بخش‌های اختصاصی برنامه</h2>
+<div class="cards">
+
+<div class="card" style="background-image:linear-gradient(0deg,#000b,transparent),url('https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=600')">
+<span>🚛 دنیای اسکانیا</span>
 </div>
 
-<p class="notice muted">
-هدف روزانه یک ریلز در ساعت ۲۰:۰۰ است.
-انتشار نهایی با خود شماست و برنامه بدون اجازه شما چیزی در اینستاگرام منتشر نمی‌کند.
-</p>
+<div class="card" style="background-image:linear-gradient(0deg,#000b,transparent),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600')">
+<span>🏔️ طبیعت کوردستان</span>
+</div>
+
+<div class="card" style="background-image:linear-gradient(0deg,#000b,transparent),url('https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600')">
+<span>❤️ فرهنگ و موسیقی کوردی</span>
+</div>
+
+<div class="card" style="background-image:linear-gradient(0deg,#000b,transparent),url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600')">
+<span>⚙️ خودرو و تیونینگ</span>
+</div>
+
+</div>
 </section>
 
 <div class="grid">
 
 <section class="panel">
-<h2>🎥 انتخاب خودکار کلیپ</h2>
+<h2>🎬 انتخاب هوشمند کلیپ</h2>
 
-<button class="btn primary category" id="scaniaBtn">
-🚛 جستجوی کلیپ اسکانیا
-</button>
+<button class="btn gold" id="scaniaBtn">🚛 جستجوی کلیپ اسکانیا</button>
+<button class="btn dark" id="kurdishBtn">❤️ جستجوی کلیپ کوردی</button>
+<button class="btn green" id="kurdishScaniaBtn">🚛 اسکانیا و کوردستان</button>
 
-<button class="btn primary category" id="kurdishBtn">
-❤️ جستجوی کلیپ‌های کوردی
-</button>
+<div id="pickMsg" class="muted">یک دسته را انتخاب کنید.</div>
 
-<button class="btn primary category" id="kurdishScaniaBtn">
-🚛 جستجوی اسکانیا با موضوع کوردستان
-</button>
+<hr style="border-color:#34465a;margin:20px 0">
 
-<div id="pickMsg" class="muted" style="margin-top:12px">
-یک دسته را انتخاب کن تا جستجو شروع شود.
-</div>
-
-<hr style="border-color:#344763;margin:18px 0">
-
-<h2>ثبت ریلز آماده انتشار</h2>
+<h2>➕ ثبت ریلز جدید</h2>
 
 <label>عنوان ریلز</label>
 <input id="title" placeholder="عنوان کلیپ">
 
-<label>بارگذاری ویدئو (MP4 یا MOV)</label>
+<label>انتخاب ویدئو</label>
 <input id="file" type="file" accept="video/mp4,video/quicktime">
 
-<label>یا لینک مستقیم ویدئو</label>
-<input id="url" type="url" placeholder="https://.../video.mp4">
+<label>لینک مستقیم ویدئو</label>
+<input id="url" type="url" placeholder="https://...">
 
-<label>کپشن و هشتگ‌ها</label>
-<textarea id="caption" placeholder="متن کپشن و هشتگ‌ها"></textarea>
+<label>کپشن و هشتگ</label>
+<textarea id="caption" placeholder="کپشن اینستاگرام"></textarea>
 
-<label>لینک منبع ویدئو</label>
-<input id="source" type="url" placeholder="https://...">
+<label>منبع ویدئو</label>
+<input id="source" type="url">
 
-<label>مجوز بازنشر / مالکیت محتوا</label>
-<textarea id="license" placeholder="جزئیات مجوز یا اجازه صاحب اثر"></textarea>
+<label>مجوز استفاده</label>
+<textarea id="license" placeholder="اطلاعات مجوز بازنشر"></textarea>
 
-<div class="row">
-<div>
 <label>تاریخ یادآوری</label>
 <input id="date" type="date">
-</div>
-<div>
+
 <label>ساعت یادآوری</label>
 <input id="time" type="time" value="20:00">
-</div>
-</div>
 
-<button class="btn primary" id="add">ذخیره ریلز</button>
+<button class="btn gold" id="add">ذخیره ریلز</button>
 <div id="formMsg" class="muted"></div>
 </section>
 
 <section class="panel">
-<h2>📋 فهرست ریلزها</h2>
+<h2>📋 فهرست ریلزهای آماده</h2>
 <div id="queue" class="muted">در حال بارگذاری...</div>
 </section>
 
 </div>
 
 <section class="panel">
-<h2>راهنمای استفاده</h2>
+<h2>🇮🇷 درباره برنامه</h2>
 <p class="muted">
-۱. دسته کلیپ موردنظر را انتخاب کن.<br>
-۲. منبع و مجوز ویدئو را بررسی کن.<br>
-۳. کپشن و اطلاعات را تکمیل کن.<br>
-۴. ریلز را ذخیره کن.<br>
-۵. در زمان مناسب خودت در اینستاگرام منتشر کن.
-<br><br>
-توجه: جستجوی کوردی بر اساس عنوان و اطلاعات فایل انجام می‌شود و زبان گفتاری داخل ویدئو را تضمین نمی‌کند. وجود مجوز در نتیجه جستجو هم جای بررسی شرایط کامل مجوز را نمی‌گیرد.
+Mohammadian AI سامانه اختصاصی آماده‌سازی محتوای اینستاگرام است.
+انتشار نهایی محتوا با تأیید شما انجام می‌شود.
+فقط محتوایی را بازنشر کنید که مجوز آن را بررسی کرده‌اید.
 </p>
 </section>
 
@@ -175,13 +265,13 @@ return d;
 function showApp(on){
 $('app').classList.toggle('hidden',!on);
 $('login').classList.toggle('hidden',on);
-$('logout').classList.toggle('hidden',!on);
 }
 
 async function check(){
 try{
 const m=await api('/api/me');
 showApp(m.loggedIn);
+$('logout').classList.toggle('hidden',!m.loggedIn);
 if(m.loggedIn)await refresh();
 }catch{}
 }
@@ -194,15 +284,15 @@ body:JSON.stringify({password:$('password').value})
 });
 $('loginMsg').textContent='';
 showApp(true);
+$('logout').classList.remove('hidden');
 await refresh();
-}catch(e){
-$('loginMsg').textContent=e.message;
-}
+}catch(e){$('loginMsg').textContent=e.message}
 };
 
 $('logout').onclick=async()=>{
 await api('/api/logout',{method:'POST'});
 showApp(false);
+$('logout').classList.add('hidden');
 };
 
 async function refresh(){
@@ -217,12 +307,10 @@ render();
 function render(){
 const root=$('queue');
 root.innerHTML='';
-
 if(!items.length){
 root.textContent='هنوز ریلزی ثبت نشده است.';
 return;
 }
-
 items.slice().reverse().forEach(p=>{
 const box=document.createElement('div');
 box.className='item';
@@ -230,13 +318,9 @@ box.className='item';
 const title=document.createElement('strong');
 title.textContent=p.title;
 
-const status=document.createElement('div');
-status.className='tag';
-status.textContent=p.status==='shared'
-?'منتشرشده توسط شما'
-:p.status==='archived'
-?'بایگانی‌شده'
-:'آماده بررسی و انتشار';
+const status=document.createElement('p');
+status.className='muted';
+status.textContent=p.status==='shared'?'منتشرشده توسط شما':p.status==='archived'?'بایگانی‌شده':'آماده بررسی و انتشار';
 
 const time=document.createElement('p');
 time.className='muted';
@@ -251,17 +335,12 @@ cap.textContent=p.caption;
 box.append(cap);
 }
 
-const v=document.createElement('p');
-v.className='muted';
-
 const a=document.createElement('a');
 a.href=p.videoUrl;
 a.target='_blank';
 a.rel='noopener';
 a.textContent='باز کردن ویدئو';
-
-v.append(a);
-box.append(v);
+box.append(a);
 
 const lic=document.createElement('p');
 lic.className='muted';
@@ -270,7 +349,7 @@ box.append(lic);
 
 if(p.status!=='shared'){
 const done=document.createElement('button');
-done.className='btn success';
+done.className='btn green';
 done.textContent='من در اینستاگرام منتشر کردم';
 done.onclick=async()=>{
 await api('/api/queue/'+p.id,{
@@ -283,58 +362,36 @@ box.append(done);
 }
 
 const del=document.createElement('button');
-del.className='btn danger';
+del.className='btn red';
 del.textContent='حذف';
 del.onclick=async()=>{
-if(confirm('این مورد حذف شود؟')){
+if(confirm('حذف شود؟')){
 await api('/api/queue/'+p.id,{method:'DELETE'});
 await refresh();
 }
 };
-
 box.append(del);
 root.append(box);
 });
 }
 
-/* جستجوی دسته انتخاب‌شده */
 async function autoPick(category){
 const msg=$('pickMsg');
-
 msg.textContent='در حال جستجو...';
-msg.className='muted';
-
-['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>{
-$(id).disabled=true;
-});
-
+['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>$(id).disabled=true);
 try{
 const p=await api('/api/auto-pick?category='+encodeURIComponent(category));
-
 $('title').value=p.title||'کلیپ جدید';
 $('url').value=p.videoUrl||'';
 $('source').value=p.sourceUrl||'';
-
-$('license').value=
-'مجوز: '+(p.license||'')+
-' | صاحب اثر: '+(p.author||'')+
-' | صفحه مجوز: '+(p.licenseUrl||'')+
-' | شرایط کامل مجوز را در صفحه منبع بررسی کن.';
-
-msg.textContent=
-'کلیپ پیدا شد. تعداد نتایج واجد شرایط: '+
-(p.totalFound||1)+
-'. قبل از انتشار شرایط مجوز را بررسی کن.';
-
+$('license').value='مجوز: '+(p.license||'')+' | صاحب اثر: '+(p.author||'')+' | صفحه مجوز: '+(p.licenseUrl||'')+' | شرایط کامل مجوز را بررسی کن.';
+msg.textContent='کلیپ پیدا شد؛ قبل از انتشار مجوز را بررسی کن.';
 msg.className='ok';
-
 }catch(e){
 msg.textContent=e.message;
 msg.className='err';
 }finally{
-['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>{
-$(id).disabled=false;
-});
+['scaniaBtn','kurdishBtn','kurdishScaniaBtn'].forEach(id=>$(id).disabled=false);
 }
 }
 
@@ -342,27 +399,20 @@ $('scaniaBtn').onclick=()=>autoPick('scania');
 $('kurdishBtn').onclick=()=>autoPick('kurdish');
 $('kurdishScaniaBtn').onclick=()=>autoPick('kurdish-scania');
 
-/* ذخیره ریلز */
 $('add').onclick=async()=>{
 const msg=$('formMsg');
-msg.textContent='';
-
 try{
 let videoUrl=$('url').value.trim();
 const f=$('file').files[0];
-
 if(f){
 const fd=new FormData();
 fd.append('video',f);
 const up=await api('/api/upload',{method:'POST',body:fd});
 videoUrl=up.videoUrl;
 }
-
 const date=$('date').value;
 const time=$('time').value;
-
 if(!date||!time)throw Error('تاریخ و ساعت را انتخاب کنید.');
-
 await api('/api/queue',{
 method:'POST',
 body:JSON.stringify({
@@ -374,16 +424,10 @@ licenseNote:$('license').value,
 scheduledAt:new Date(date+'T'+time).toISOString()
 })
 });
-
 msg.textContent='ریلز ذخیره شد.';
 msg.className='ok';
-
-['title','caption','url','source','license','file'].forEach(id=>{
-$(id).value='';
-});
-
+['title','caption','url','source','license','file'].forEach(id=>$(id).value='');
 await refresh();
-
 }catch(e){
 msg.textContent=e.message;
 msg.className='err';
